@@ -1,0 +1,56 @@
+<p-dialog
+  header="{{modalType}} Producto" [(visible)]="displayAddEditModal"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="closeModal()"
+  >
+
+  <form [formGroup]="productForm" class="justify-between items-center">
+
+    <div class="form-group">
+      <label for="nombre">Nombre</label>
+      <input pInputText id="nombre" formControlName="nombre" class="form-control" />
+      <small class="text-danger" *ngIf="productForm.controls['nombre'].invalid && productForm.controls['nombre'].dirty">Nombre es requerido</small>
+    </div>
+
+    <div class="form-group">
+      <label for="descripcion">Descripción</label>
+      <input pInputText id="descripcion" formControlName="descripcion" class="form-control" />
+      <small class="text-danger" *ngIf="productForm.controls['descripcion'].invalid && productForm.controls['descripcion'].dirty">descripcion es requerido</small>
+    </div>
+
+    <div class="form-group">
+      <label for="unidad">Unidad</label>
+      <input pInputText id="unidad" formControlName="unidad" class="form-control" />
+      <small class="text-danger" *ngIf="productForm.controls['unidad'].invalid && productForm.controls['unidad'].dirty">unidad es requerido</small>
+    </div>
+
+
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label for="precio">Precio</label>
+          <p-inputNumber id="precio" formControlName="precio" class="form-control"></p-inputNumber>
+          <small class="text-danger" *ngIf="productForm.controls['precio'].invalid && productForm.controls['precio'].dirty">Precio es requerido</small>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label for="stock">Stock</label>
+          <p-inputNumber id="stock" formControlName="stock" class="form-control"></p-inputNumber>
+          <small class="text-danger" *ngIf="productForm.controls['stock'].invalid && productForm.controls['stock'].dirty">Stock es requerido</small>
+        </div>
+      </div>
+    </div>
+  </form>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" (click)="closeModal()" styleClass="p-button-text"></p-button>
+      <p-button label="{{ modalType}} Producto"
+      (click)="addEditProduct()"
+      [disabled]="productForm.invalid"></p-button>
+    </ng-template>
+</p-dialog>

@@ -1,0 +1,37 @@
+<div class="d-flex justify-content-between  p-2">
+  <h2 class="text-center mb-2">Ventas</h2>
+</div>
+
+<p-table
+    [value]="ventas"
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '30rem' }"
+    [paginator]="true" [rows]="5"
+    [globalFilterFields]="['nombre','fechaHora']"
+    >
+  <ng-template pTemplate="header">
+      <tr>
+          <th pSortableColumn="id">CODIGO <p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="fechaHora"> Fecha Hora <p-sortIcon field="fechaHora"></p-sortIcon></th>
+          <th pSortableColumn="nombreProducto">Producto <p-sortIcon field="nombreProducto"></p-sortIcon></th>
+          <th pSortableColumn="unidad">Unidad <p-sortIcon field="unidad"></p-sortIcon></th>
+          <th pSortableColumn="cantidad">Cantidad <p-sortIcon field="cantidad"></p-sortIcon></th>
+          <th pSortableColumn="nombreCliente">Cliente <p-sortIcon field="nombreCliente"></p-sortIcon></th>
+          <th pSortableColumn="valorUnitario">Valor Unitario <p-sortIcon field="valorUnitario"></p-sortIcon></th>
+          <th pSortableColumn="valorTotal">valor Total <p-sortIcon field="valorTotal"></p-sortIcon></th>
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-venta>
+      <tr>
+          <td>{{ venta.id }}</td>
+          <td>{{ venta.fechaHora | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+          <td>{{ venta.nombreProducto }}</td>
+          <td>{{ venta.unidad }}</td>
+          <td>{{ venta.cantidad }}</td>
+          <td>{{ venta.nombreCliente }}</td>
+          <td>{{ venta.valorUnitario  | currency }}</td>
+          <td>{{ venta.valorTotal | currency }}</td>
+      </tr>
+  </ng-template>
+</p-table>
+

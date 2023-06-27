@@ -1,0 +1,128 @@
+<div class="d-flex justify-content-between  p-2">
+  <h2 class="text-center mb-2">Clientes</h2>
+  <p-button label="Agregar Cliente" class="ml-5" (click)="showAddModal()"></p-button>
+</div>
+
+
+
+<p-table
+    #dt1
+    [value]="clientes"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    styleClass="p-datatable-striped"
+    [paginator]="true" [rows]="5"
+    [globalFilterFields]="['identificacion','primerNombre','primerApellido']"
+    >
+  <ng-template pTemplate="caption">
+      <div class="d-flex justify-content-end">
+          <span class="p-input-icon-left ml-auto">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value ?? '', 'contains')" placeholder="Buscar" />
+          </span>
+      </div>
+    </ng-template>
+  <ng-template pTemplate="header">
+      <tr>
+          <th pSortableColumn="tipoIdentificacion"> Tipo Identificación <p-sortIcon field="tipoIdentificacion"></p-sortIcon></th>
+          <th pSortableColumn="identificacion"> Identificación <p-sortIcon field="identificacion"></p-sortIcon></th>
+          <th pSortableColumn="primerNombre">Primer Nombre <p-sortIcon field="primerNombre"></p-sortIcon></th>
+          <th pSortableColumn="segundoNombre">Segundo Nombre <p-sortIcon field="segundoNombre"></p-sortIcon></th>
+          <th pSortableColumn="primerApellido">Primer Apellido <p-sortIcon field="primerApellido"></p-sortIcon></th>
+          <th pSortableColumn="segundoApellido">Segundo Apellido <p-sortIcon field="segundoApellido"></p-sortIcon></th>
+          <th pSortableColumn="telefono">Celular <p-sortIcon field="telefono"></p-sortIcon></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+          <th pSortableColumn="direccion">Dirección <p-sortIcon field="direccion"></p-sortIcon></th>
+          <th class="text-center" ></th>
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-cliente>
+      <tr>
+          <td>{{ cliente.tipoIdentificacion }}</td>
+          <td>{{ cliente.identificacion }}</td>
+          <td>{{ cliente.primerNombre }}</td>
+          <td>{{ cliente.segundoNombre }}</td>
+          <td>{{ cliente.primerApellido }}</td>
+          <td>{{ cliente.segundoApellido}}</td>
+          <td>{{ cliente.telefono}}</td>
+          <td>{{ cliente.email}}</td>
+          <td>{{ cliente.direccion}}</td>
+          <td>
+            <p-button icon="pi pi-file-edit"  pTooltip="Editar cliente" class="m-2" (onClick)="showEditModal(cliente)"></p-button>
+            <p-button icon="pi pi-trash" styleClass="p-button-danger"  pTooltip="Eliminar cliente" class="m-2" (onClick)="delete(cliente)"></p-button>
+          </td>
+      </tr>
+  </ng-template>
+</p-table>
+
+
+<p-dialog
+  header="{{modalType}} Cliente" [(visible)]="displayAddEditModal"
+  [style]="{ width: '50vw' }"
+  (onHide)="closeModal()"
+  >
+
+  <form [formGroup]="clienteForm" class="justify-between items-center">
+
+    <div class="form-group">
+      <label for="tipoIdentificacion">Tipo identificación</label>
+      <p-dropdown id="tipoIdentificacion" formControlName="tipoIdentificacion" [options]="tiposIdentificaciones" placeholder="Seleccione una opcion" class="form-control" ></p-dropdown>
+      <small class="text-danger" *ngIf="clienteForm.controls['tipoIdentificacion'].invalid && clienteForm.controls['tipoIdentificacion'].dirty">Tipo Identificación es requerido</small>
+    </div>
+
+    <div class="form-group">
+      <label for="nombre">Identificación</label>
+      <input pInputText id="identificacion" formControlName="identificacion" class="form-control" />
+      <small class="text-danger" *ngIf="clienteForm.controls['identificacion'].invalid && clienteForm.controls['identificacion'].dirty">Identificación es requerido</small>
+    </div>
+
+    <div class="form-group">
+      <label for="primerNombre">Primer Nombre</label>
+      <input pInputText id="primerNombre" formControlName="primerNombre" class="form-control" />
+      <small class="text-danger" *ngIf="clienteForm.controls['primerNombre'].invalid && clienteForm.controls['primerNombre'].dirty">Primer nombre es requerido</small>
+    </div>
+
+    <div class="form-group">
+      <label for="segundoNombre">Segundo Nombre</label>
+      <input pInputText id="segundoNombre" formControlName="segundoNombre" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="primerApellido">Primer Apellido</label>
+      <input pInputText id="primerApellido" formControlName="primerApellido" class="form-control" />
+      <small class="text-danger" *ngIf="clienteForm.controls['primerApellido'].invalid && clienteForm.controls['primerApellido'].dirty">Primer Apellido es requerido</small>
+    </div>
+
+    <div class="form-group">
+      <label for="segundoApellido">Segundo Apellido</label>
+      <input pInputText id="segundoApellido" formControlName="segundoApellido" class="form-control" />
+      <small class="text-danger" *ngIf="clienteForm.controls['segundoApellido'].invalid && clienteForm.controls['segundoApellido'].dirty">Segundo Apellido es requerido</small>
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Celular</label>
+      <input pInputText id="telefono" formControlName="telefono" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input pInputText id="email" formControlName="email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="direccion">Dirección</label>
+      <input pInputText id="direccion" formControlName="direccion" class="form-control" />
+    </div>
+
+  </form>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" (click)="closeModal()" styleClass="p-button-text"></p-button>
+      <p-button label="{{ modalType}} Cliente"
+      (click)="addEditCliente()"
+      [disabled]="clienteForm.invalid"></p-button>
+    </ng-template>
+</p-dialog>
+
+
+<p-toast position="bottom-right"></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

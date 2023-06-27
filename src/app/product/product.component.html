@@ -1,0 +1,136 @@
+<div class="d-flex justify-content-between  p-2 ">
+  <h2 class="text-center mb-2">Productos</h2>
+  <p-button label="Agregar Producto" class="ml-5" (click)="showAddModal()"></p-button>
+</div>
+
+<p-table
+    #dt1
+    [value]="products"
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '30rem' }"
+    [paginator]="true"
+    [rows]="5"
+    [globalFilterFields]="['nombre']"
+    >
+    <ng-template pTemplate="caption">
+      <div class="d-flex justify-content-end">
+          <span class="p-input-icon-left ml-auto">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value ?? '', 'contains')" placeholder="Buscar" />
+          </span>
+      </div>
+    </ng-template>
+  <ng-template pTemplate="header">
+      <tr>
+          <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+          <th pSortableColumn="descripcion">Descripcion <p-sortIcon field="descripcion"></p-sortIcon></th>
+          <th pSortableColumn="unidad">Unidad <p-sortIcon field="unidad"></p-sortIcon></th>
+          <th pSortableColumn="precio">Precio <p-sortIcon field="precio"></p-sortIcon></th>
+          <th pSortableColumn="stock">Stock <p-sortIcon field="stock"></p-sortIcon></th>
+          <th class="text-center" >ACCIONES</th>
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-product>
+      <tr>
+          <td>{{ product.nombre }}</td>
+          <td>{{ product.descripcion }}</td>
+          <td>{{ product.unidad }}</td>
+          <td>{{ product.precio | currency }}</td>
+          <td clas>
+            <div [ngClass]="{'text-danger fw-bold': product.stock === 0, 'text-warning fw-bold': (product.stock > 0 && product.stock < 10),'text-success fw-bold': product.stock > 10}">
+              {{ product.stock }}
+            </div>
+          </td>
+          <td class="text-center">
+            <p-button icon="pi pi-money-bill" styleClass="p-button-success"  pTooltip="Realizar venta" class="m-2" (click)="showAddVentaModal(product)"></p-button>
+            <p-button icon="pi pi-file-edit"  pTooltip="Editar producto" class="m-2"  (click)="showEditModal(product)"></p-button>
+            <p-button icon="pi pi-trash" styleClass="p-button-danger"  pTooltip="Eliminar producto" class="m-2" (click)="deleteProduct(product)"></p-button>
+          </td>
+      </tr>
+  </ng-template>
+</p-table>
+
+<app-add-edit-product
+      [displayAddEditModal] = "displayAddEditModal"
+      [selectedProduct]="selectedProduct"
+      (clickClose)="hideAddModal($event)"
+      (clickAddEdit)="saveOrUpdateProductList($event)"
+  ></app-add-edit-product>
+
+<p-dialog header="Venta de productos" [(visible)]="displayAddVentaModal" [style]="{width: '50vw'}">
+  <form [formGroup]="ventaForm" class="justify-content-between align-items-center">
+    <div class="row">
+      <div class="col-md-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <p class="fs-5 fw-bold">{{ productoVenta.nombre }}</p>
+      </div>
+      <div class="col-md-3">
+        <label for="precio" class="form-label">Unidad</label>
+        <p class="fs-5">{{ productoVenta.unidad }}</p>
+      </div>
+      <div class="col-md-3">
+        <label for="precio" class="form-label">Precio</label>
+        <p class="fs-5">{{ productoVenta.precio | currency }}</p>
+      </div>
+      <div class="col-md-3">
+        <label for="stock" class="form-label">Stock</label>
+        <p class="fs-5">{{ productoVenta.stock }}</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-2">
+          <label for="clientes" class="form-label">Cliente</label>
+          <p-dropdown
+            id="nombreCliente"
+            formControlName="nombreCliente"
+            [options]="clientes"
+            [(ngModel)]="selectedClient"
+            class="form-control"
+            optionLabel="identificacion"
+            [filter]="true"
+            filterBy="identificacion"
+            [showClear]="true"
+            placeholder="Escoja el cliente">
+        </p-dropdown>
+        <small class="text-danger" *ngIf="ventaForm.controls['nombreCliente'].invalid && ventaForm.controls['nombreCliente'].dirty">Cliente es un campo requerido</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-2">
+          <label for="cantidad" class="form-label">Cantidad</label>
+          <input type="number" id="cantidad" formControlName="cantidad" class="form-control" min="1">
+          <small class="text-danger" *ngIf="ventaForm.controls['cantidad'].invalid && ventaForm.controls['cantidad'].dirty">Cantidad es un campo requerido</small>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-2">
+          <label for="total" class="form-label">Total</label>
+          <p class="fs-5">{{ calculateTotal() | currency }}</p>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" (click)="closeModalVenta()" styleClass="p-button-text"></p-button>
+    <p-button label=" Crear venta"
+    (click)="crearVenta()"
+    [disabled]="ventaForm.invalid"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast position="bottom-right"></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+
+
+
+
+
+
